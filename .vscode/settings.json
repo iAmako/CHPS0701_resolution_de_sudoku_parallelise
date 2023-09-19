@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "graphes.C": "cpp",
+        "sudoku.h": "c"
+    }
+}

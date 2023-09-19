@@ -1,0 +1,50 @@
+3 tableaux pour lignes & colonnes & "cases 3*3"
+
+
+sudoku de profondeur 3,4,5
+
+
+si pas possible de partager la mémiore efffiacement -> plusieurs comemncent sur leur propre grille 
+
+
+sudoku solver / generator https://github.com/t-dillon/tdoku
+
+
+csv file, faire quelque chose comme ça https://www.kaggle.com/datasets/bryanpark/sudoku 
+
+
+
+
+document de synthese : parler de représentation, format des grilles, les fichiers potentiellement récupérés, comment on aurait réagit si il n'y avait pas de 4*4, 
+
+
+
+
+éviter les variables globales, préférer passer des parametres 
+passer principalement des pointeurs, particulierement si on utilise une structure 
+
+nb de violation de contrainte? 
+
+
+nb d'iccurence du chiffre w ) <
+
+
+cout = nb de contrainte violées 
+
+deux solutions voisines si elles différent par un nombre défini de case 
+
+toutes les solutions sont voisines, forte connexitée 
+
+
+
+
+c(w) --> cout 
+c(w') 
+
+
+
+c(w') < c(w) == amélioration 
+
+
+calculer le cout de chaque solution pouren déduire la température et la probabilité
+on commence par essayer des solutions à température élevée 
