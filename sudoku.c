@@ -15,7 +15,3 @@ charger_sudoku(FILE *file, int line_nb, char ***sudoku)
     } 
 }
 
-charger_fichier(char *filename, FILE *fptr)// juste faire un fopen dans le main maybe
-{ 
-    FILE *fptr = fopen(filename, "r");
-}

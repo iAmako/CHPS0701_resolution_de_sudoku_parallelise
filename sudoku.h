@@ -4,17 +4,25 @@
 
 //char[9][9][9] = un sudoku ? 
 
+
+
+typedef struct sudoku_s{
+    int block_length;
+    int array_length;
+    char** sudoku_array;
+    char** sudoku_blocks;
+}sudoku;
 typedef struct solution_s{
     float cout;
     float temperature;
-    char sudoku_origine[9][9];
-    char sudoku_solution[9][9];
+    sudoku sudoku_origine;
+    sudoku sudoku_solution;
 }solution;
 
 
-charger_fichier(char* filename,FILE* ptr)
-void charger_sudoku(FILE* file, char*** sudoku);
-void construire_graph();
-void deduire_temperature();
-void deduire_cout();
+
+void load_sudoku(FILE* file, sudoku* sudoku_ptr);//ou à partir du char* filename ? 
+void temperature(sudoku* sudoku_ptr);
+void cost(sudoku* sudoku_ptr);
+void new_solution(sudoku* sudoku_ptr);
 #endif 

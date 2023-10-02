@@ -1,6 +1,9 @@
 {
     "files.associations": {
+        "*.ffem": "freefem",
         "graphes.C": "cpp",
-        "sudoku.h": "c"
+        "sudoku.h": "c",
+        "stdio.h": "c",
+        "types.h": "c"
     }
 }
