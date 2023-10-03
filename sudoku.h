@@ -20,9 +20,12 @@ typedef struct solution_s{
 }solution;
 
 
-
-void load_sudoku(FILE* file, sudoku* sudoku_ptr);//ou à partir du char* filename ? 
+//charge un sudoku en mémoire, un sudoku est représenté par une ligne dans un fichier "." 
+void load_sudoku(FILE* file, sudoku* sudoku_ptr,int line_nb);//ou à partir du char* filename ? 
+//valeur utilisé par l'algorithme pour décider de la vitesse du recuit simulé 
 void temperature(sudoku* sudoku_ptr);
+//indique le nombre de violation de règle pour la grille 
 void cost(sudoku* sudoku_ptr);
+//génère une solution aléatoire pour le sudoku
 void new_solution(sudoku* sudoku_ptr);
 #endif 

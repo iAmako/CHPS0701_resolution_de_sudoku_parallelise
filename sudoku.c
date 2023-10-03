@@ -6,7 +6,7 @@
 #define TAILLE_SUDOKU 3
 
 
-charger_sudoku(FILE *file, int line_nb, char ***sudoku)
+charger_sudoku(FILE *file, int line_nb, )
 {
     
     fgetc();
