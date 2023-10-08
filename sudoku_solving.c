@@ -12,47 +12,50 @@
 void solve(sudoku* sudoku_ptr){
     //INITIALISATION 
     double delta = 0.1;
-    double ep = 1920/2;
-    double Temperature = 1920/2;
+    double ep = 1620/2;
+    double Temperature = ep;
     int i,j;
+    unsigned int c = 0;
+    unsigned int c1 = 0;
+    unsigned int c2 = 0;
+    unsigned int c_prime = 0;
+    solution temporaire;
 
     //choisir une solution arbitrairement 
     //omega = choisirSolution();
     solution omega = choisirSolution(sudoku_ptr);
 
-    while(T >= 0.00273852){
+    while(Temperature >= 0.00273852){
         for(int k = 1; k <= 81; k++){
             //choisir i et j dans {1,9} (vérifier que c'est pas une case déjà prise)
             i = rand_r()%9+1;
             j = rand_r()%9+1;
 
-            //vérifier que la case est pas déjà prise 
+            temporaire = omegaij;
+            c1 = cost(omegaij);
 
-            t = omega;
-            c1 = c;
             do{
-
+                omegaij = solutionaleatoirepourlacase
             }
-            while (w == t)
-            
-            t = //omega ij
+            while (omegaij == temporaire)
 
-            c2 = cost(omega)
+            c2 = cost(omegaij)
             c_prime = c-c1+c2
 
             //choisir u dans   [0,1]
+            u = rand_r truc 
 
-
-            if(u <= e*((c_prime-c)/T)){
+            if(u <= e*((c_prime-c)/Temperature)){
                 c = c_prime;//acceptation
             } else {
-                omega = t;//rejet
+                omegaij = temporaire;//rejet
             }
             if(c == 0){
+                
                 //écrire omega dans la case 
             }
         }
-        T = ( T / ( 1 + ( log(1 + delta) / exp( p + 1 )) * T ));
+        Temperature = ( Temperature / ( 1 + ( log(1 + delta) / exp( p + 1 )) * Temperature ));
         
     }
 }
