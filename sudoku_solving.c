@@ -1,5 +1,6 @@
 #include "sudoku.h"
 #include "stdlib.h"
+#include <pthread.h>
 //w1,w2,w3... un ensemble de solution 
 //fonction economique c(w) 
 //fonction de voisinage V : OMEGA donne 2 puissance OMEGA 
@@ -19,19 +20,22 @@ void solve(sudoku* sudoku_ptr){
     unsigned int c1 = 0;
     unsigned int c2 = 0;
     unsigned int c_prime = 0;
-    solution temporaire;
+    sudoku* temporaire;
+    double cons = log(1+delta);
+    unsigned int seed = 0;
 
     //choisir une solution arbitrairement 
     //omega = choisirSolution();
-    solution omega = choisirSolution(sudoku_ptr);
+    sudoku* omega = new_solution(sudoku_ptr);
 
     while(Temperature >= 0.00273852){
         for(int k = 1; k <= 81; k++){
             //choisir i et j dans {1,9} (vérifier que c'est pas une case déjà prise)
+            seed = (unsigned int)time(NULL)+pthread_self();
             i = rand_r()%9+1;
             j = rand_r()%9+1;
 
-            temporaire = omegaij;
+            temporaire = omega->sudoku_array[i][j];
             c1 = cost(omegaij);
 
             do{
@@ -58,4 +62,7 @@ void solve(sudoku* sudoku_ptr){
         Temperature = ( Temperature / ( 1 + ( log(1 + delta) / exp( p + 1 )) * Temperature ));
         
     }
+
+    free_sudoku(omega);
+    free_sudoku(sudoku_ptr);
 }

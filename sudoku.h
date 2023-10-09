@@ -18,10 +18,12 @@ typedef struct solution_s{
 
 //charge un sudoku en mémoire, un sudoku est représenté par une ligne dans un fichier "." 
 sudoku* load_sudoku(FILE* filename, int line_number);//ou à partir du char* filename ? 
+//indique le nombre de violation de règle pour la case spécifiée en paramètres
+unsigned int case_cost(sudoku *sudoku_ptr, int i, int j);
 //indique le nombre de violation de règle pour la grille 
-void grid_cost(sudoku* sudoku_ptr, int line, int column);
+unsigned int grid_cost(sudoku *sudoku_ptr);
 //génère une solution aléatoire pour le sudoku
-void new_solution(sudoku* sudoku_ptr);
+sudoku* new_solution(sudoku* sudoku_ptr);
 //libérer la mémoire
 void free_sudoku(sudoku* sudoku_ptr);
 #endif 
