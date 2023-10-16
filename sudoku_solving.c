@@ -1,6 +1,6 @@
 #include "sudoku.h"
 #include "stdlib.h"
-#include <pthread.h>
+#include <omp.h>
 //w1,w2,w3... un ensemble de solution 
 //fonction economique c(w) 
 //fonction de voisinage V : OMEGA donne 2 puissance OMEGA 
@@ -8,7 +8,6 @@
 //à chaque itération une solution omega prime est choisit arbitrairement parmi toutes les solutions possibles 
 
 //graphe de sudoku > les sommets sont les casses de la grille, deux sommets osnt liés s'ils sont sur la même ligne, colonne, sous carré 
-
 
 void solve(sudoku* sudoku_ptr){
     //INITIALISATION 
@@ -23,6 +22,7 @@ void solve(sudoku* sudoku_ptr){
     sudoku* temporaire;
     double cons = log(1+delta);
     unsigned int seed = 0;
+    int tmp_solution = 0;
 
     //choisir une solution arbitrairement 
     //omega = choisirSolution();
@@ -30,29 +30,35 @@ void solve(sudoku* sudoku_ptr){
 
     while(Temperature >= 0.00273852){
         for(int k = 1; k <= 81; k++){
+
+            seed = omp_get_thread_num();
+
             //choisir i et j dans {1,9} (vérifier que c'est pas une case déjà prise)
             seed = (unsigned int)time(NULL)+pthread_self();
             i = rand_r()%9+1;
             j = rand_r()%9+1;
 
             temporaire = omega->sudoku_array[i][j];
-            c1 = cost(omegaij);
+            c1 = case_cost(omega,i,j);
 
             do{
-                omegaij = solutionaleatoirepourlacase
+                tmp_solution = rand_r()%9+1;;//nouvelle solution aléatoire entre 1 et 9 
+                omega->sudoku_array[i][j] = tmp_solution;
+                omega->sudoku_blocks[block_nb(i,j,omega->sudoku_length)][pos_in_block(i,j,omega->sudoku_length)] = tmp_solution; //ajouter la division euclidienne 
             }
-            while (omegaij == temporaire)
+            while (omega->sudoku_array[i][j] == temporaire);
 
-            c2 = cost(omegaij)
-            c_prime = c-c1+c2
+            c2 = case_cost(omega,i,j);
+            c_prime = c-c1+c2;
 
             //choisir u dans   [0,1]
-            u = rand_r truc 
+            u = rand_r truc ;
 
             if(u <= e*((c_prime-c)/Temperature)){
                 c = c_prime;//acceptation
             } else {
-                omegaij = temporaire;//rejet
+                omega->sudoku_array[i][j] = temporaire;//rejet
+                omega->sudoku_blocks[][] = temporaire;
             }
             if(c == 0){
                 

@@ -7,8 +7,23 @@
 
 #define TAILLE_SUDOKU 3
 
+//donne le numéro de bloc (entre 0 et 8 ) corresopndant aux ligne/col (entre 0 et 8 ) passé en paramètres dépendant la taille du sudoku
+int block_nb(int row, int col, int sudoku_length){
+    return row / sudoku_length * sudoku_length + col / sudoku_length;
+}
+//donne la position (entre 0 et 8) d'une case dans un bloc de la grille 
+int pos_in_block(int row, int col, int sudoku_length){
+    return row % sudoku_length * sudoku_length + col % sudoku_length;
+}
+
+//donne les coordonnées dans le tableau de blocs correspondant aux coords du tableau de lignes/colonnes 
+void block_coords(int row, int col, int sudoku_length, int* coords){
+    coords[0] = row / sudoku_length * sudoku_length + col / sudoku_length;//bloc_pos 
+    coords[1] = row % sudoku_length * sudoku_length + col % sudoku_length;//pos_in_bloc //EN FAIT CA MARCHE PEUT ETRE // TODO CEST PAS BON  IL Y A DU MODULO QUELQUE PART  //  CEST COMME REDUIRE EN UNE SEULE GRILLE 
+}
+
 // charge un sudoku en mémoire, un sudoku est représenté par une ligne dans un fichier "."
-sudoku *load_sudoku(FILE *filename, int line_number)
+sudoku *load_sudoku(char* filename, int line_number)
 {
     sudoku *new_sudoku = (sudoku *)malloc(sizeof(sudoku));
     if (new_sudoku == NULL)
@@ -77,6 +92,7 @@ sudoku *load_sudoku(FILE *filename, int line_number)
             }
             //TODO REMPLIR LES BLOCS 
             // new_sudoku->sudoku_blocks[][];
+            new_sudoku->sudoku_blocks[block_nb(i,j,sudoku_length)][pos_in_block(i,j,sudoku_length)];
         }
     }
 
@@ -99,6 +115,10 @@ unsigned int case_cost(sudoku *sudoku_ptr, int i, int j){
     unsigned int cost = 0;
     int cur_value = sudoku_ptr->sudoku_array[i][j];
     int line_col_len = sudoku_ptr->sudoku_length * sudoku_ptr->sudoku_length;
+
+    int cur_block = block_nb(i,j,sudoku_ptr->sudoku_length);
+    int cur_pos_in_block = pos_in_block(i,j,sudoku_ptr->sudoku_length);
+
     for(int k = 0; k < line_col_len; k++){
         //line
         if(j != k){
@@ -112,9 +132,9 @@ unsigned int case_cost(sudoku *sudoku_ptr, int i, int j){
                 ++cost;
             }
         }
-        //bloc
-        if(j != k){
-            if(cur_value == sudoku_ptr->sudoku_array[i][k]){
+        //bloc // peut etre mieux de le faire dans une autre boucle 
+        if(cur_pos_in_block != k){
+            if(cur_value == sudoku_ptr->sudoku_array[cur_block][k]){
                 ++cost;
             }
         }
@@ -124,34 +144,35 @@ unsigned int case_cost(sudoku *sudoku_ptr, int i, int j){
 // indique le nombre de violation de règle pour la grille
 unsigned int grid_cost(sudoku *sudoku_ptr){
     unsigned int cost = 0;
-    int cur_line_value = 0;
-    int cur_col_value = 0;
-    int cur_block_value = 0;
+    int cur_value = 0;
+    int cur_block = 0;
+    int cur_pos_in_block = 0;
 
     int line_col_len = sudoku_ptr->sudoku_length*sudoku_ptr->sudoku_length;
     for (int i = 0; i < line_col_len; i++)
     {        
         for (int j = 0; j < line_col_len; j++)
         {
-            cur_line_value = sudoku_ptr->sudoku_array[i][j];
-            cur_col_value = sudoku_ptr->sudoku_array[i][j];
-            cur_block_value = sudoku_ptr->sudoku_blocks[i][j];
+            cur_value = sudoku_ptr->sudoku_array[i][j];
+            cur_block = block_nb(i,j,sudoku_ptr->sudoku_length);
+            cur_pos_in_block = pos_in_block(i,j,sudoku_ptr->sudoku_length);
+
             for(int k = 0; k < line_col_len; k++){
                 //line
                 if(j != k){
-                    if(cur_line_value == sudoku_ptr->sudoku_array[i][k]){
+                    if(cur_value == sudoku_ptr->sudoku_array[i][k]){
                         ++cost;
                     }
                 }
                 //column
                 if(i != k){
-                    if(cur_col_value == sudoku_ptr->sudoku_array[k][j]){
+                    if(cur_value == sudoku_ptr->sudoku_array[k][j]){
                         ++cost;
                     }
                 }
-                //bloc
-                if(j != k){
-                    if(cur_block_value == sudoku_ptr->sudoku_array[i][k]){
+                //bloc // peut etre mieux de le faire dans une autre boucle 
+                if(cur_pos_in_block != k){
+                    if(cur_value == sudoku_ptr->sudoku_array[cur_block][k]){
                         ++cost;
                     }
                 }
