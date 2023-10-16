@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    char* file_path = argv[1];
+    char file_path[128] = argv[1];
     int line_nb = (int)argv[2];
 
     test_sudoku(file_path,line_nb);

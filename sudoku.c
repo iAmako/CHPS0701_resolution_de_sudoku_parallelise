@@ -48,7 +48,7 @@ sudoku *load_sudoku(char* filename, int line_number)
     if (ferror(file))
     {
         // Erreur de lecture
-        perror("Erreur lors de la lecture de la ligne");
+        perror("Erreur lors de la lecture de la ligne");    
         fclose(file);
         return NULL;
     }
