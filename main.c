@@ -1,11 +1,19 @@
 #include <stdio.h>
+#include <stdlib.h>
+
 #include "sudoku.h"
+#include "sudoku_solving.h"
+
 //#include "sudoku_solving.h"
 
 //test allocation & libération mémoire sudoku  
-void test_sudoku(file_path,line_nb){
-    //charge un sudoku en mémoire, un sudoku est représenté par une ligne dans un fichier "." 
+void test_sudoku(char* file_path,int line_nb){
+    //charge un sudoku en mémoire, un sudoku est représenté par une ligne dans un fichier "."     
+
+    printf("%s,%d\n",file_path,line_nb);
     sudoku* my_sudoku = load_sudoku(file_path, line_nb);
+
+    print_sudoku(my_sudoku);
 
     //indique le nombre de violation de règle pour la case spécifiée en paramètres
     //unsigned int case_cost(sudoku *sudoku_ptr, int i, int j);
@@ -15,7 +23,7 @@ void test_sudoku(file_path,line_nb){
     //sudoku* new_solution(sudoku* sudoku_ptr);
     
     //libérer la mémoire
-    void free_sudoku(my_sudoku);
+    free_sudoku(my_sudoku);
 }
 
 int main(int argc, char* argv[]) {
@@ -24,8 +32,24 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    char file_path[128] = argv[1];
-    int line_nb = (int)argv[2];
+    /*
+    char file_path[128] = "";
+    if(!sscanf(file_path,"%127s",argv[1])){
+        printf("Error reading from the file\n");
+    }
+    */
 
-    test_sudoku(file_path,line_nb);
+    sudoku* my_sudoku = load_sudoku(argv[0], atoi(argv[1]));
+
+
+    sudoku* solution = solve_sudoku(my_sudoku);
+    printf("Sudoku : \n\n");
+    print_sudoku(my_sudoku);
+
+    printf("Solution : \n\n");
+    print_sudoku(solution);
+
+    free_sudoku(my_sudoku);
+    free_sudoku(solution);
+    
 }

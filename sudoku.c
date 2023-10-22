@@ -24,6 +24,26 @@ void block_coords(int row, int col, int sudoku_length, int* coords){
     coords[1] = row % sudoku_length * sudoku_length + col % sudoku_length;//pos_in_bloc //EN FAIT CA MARCHE PEUT ETRE // TODO CEST PAS BON  IL Y A DU MODULO QUELQUE PART  //  CEST COMME REDUIRE EN UNE SEULE GRILLE 
 }
 
+void print_sudoku(sudoku* su){
+    int row_col_length = su->sudoku_length*su->sudoku_length;
+    for (int i = 0; i < row_col_length; i++)
+    {
+        for (int j = 0; j < row_col_length; j++)
+            {
+                printf("%c ",su->sudoku_array[i][j]);
+                if(!((j+1)%su->sudoku_length)){
+                    printf(" ");
+                }
+            }
+        printf("\n");
+        if(!((i+1)%su->sudoku_length)){
+            printf("\n");
+        }
+        
+    }
+    
+}
+
 // charge un sudoku en mémoire, un sudoku est représenté par une ligne dans un fichier "."
 sudoku *load_sudoku(char* filename, int line_number)
 {
@@ -33,8 +53,6 @@ sudoku *load_sudoku(char* filename, int line_number)
         // Gestion de l'erreur de mémoire
         return NULL;
     }
-
-
 
     // Ouverture du fichier
     FILE *file = fopen(filename, "r");
@@ -58,31 +76,40 @@ sudoku *load_sudoku(char* filename, int line_number)
         return NULL;
     }
 
+
+
     // lecture de la taille du sudoku, à refaire
     int sudoku_length = 3; // premier char
     int line_col_length = sudoku_length * sudoku_length;
-    int char_nb = (int)pow((double)(sudoku_length), 4.0);
+    int char_nb = (int)pow((double)(sudoku_length), 3.0);
 
     new_sudoku->sudoku_length = sudoku_length;
 
     // Allouer de la mémoire pour le tableau sudoku_array
-    // on peut pas faire ça, il faut d'abord lire le fichier pour connaître la longueur de l'array
-    new_sudoku->sudoku_array = (char **)malloc((int)(pow((double)sudoku_length, 4.0)) * sizeof(char *));
+    // il faut d'abord lire le fichier pour connaître la longueur de l'array
+    new_sudoku->sudoku_array = (char **)malloc((int)(line_col_length) * sizeof(char *));
     if (new_sudoku->sudoku_array == NULL)
     {
         // Gestion de l'erreur de mémoire
         free(new_sudoku);
         return NULL;
     }
+    for(int i = 0; i<line_col_length;i++){
+        new_sudoku->sudoku_array[i] = (char *)malloc((int)(line_col_length) * sizeof(char));
+    }
 
     // Allouer de la mémoire pour le tableau sudoku_blocks
-    new_sudoku->sudoku_blocks = (char **)malloc((int)(pow((double)sudoku_length, 4.0)) * sizeof(char *));
+    new_sudoku->sudoku_blocks = (char **)malloc((int)(line_col_length) * sizeof(char *));
     if (new_sudoku->sudoku_blocks == NULL)
     {
         // Gestion de l'erreur de mémoire
         free(new_sudoku);
         return NULL;
     }
+    for(int i = 0; i<line_col_length;i++){
+        new_sudoku->sudoku_array[i] = (char *)malloc((int)(line_col_length) * sizeof(char));
+    }
+
 
     char c = '0';
 
@@ -90,16 +117,14 @@ sudoku *load_sudoku(char* filename, int line_number)
     {
         for (int j = 0; j < line_col_length; j++)
         {
-            while ((c = fgetc(file)) != EOF)
-            {
-                // Process the character (e.g., print it)
-                new_sudoku->sudoku_array[i][j] = c;
-            }
-            //TODO REMPLIR LES BLOCS 
-            // new_sudoku->sudoku_blocks[][];
+            c = fgetc(file);
+
+            // Place the character in Array&Block
+            new_sudoku->sudoku_array[i][j] = c;
             new_sudoku->sudoku_blocks[block_nb(i,j,sudoku_length)][pos_in_block(i,j,sudoku_length)];
         }
     }
+
 
     // new_sudoku->sudoku_blocks[][];
 
@@ -202,7 +227,7 @@ sudoku* new_solution(sudoku *sudoku_ptr){
 
     // Allouer de la mémoire pour le tableau sudoku_array
     // on peut pas faire ça, il faut d'abord lire le fichier pour connaître la longueur de l'array
-    new_sudoku->sudoku_array = (char **)malloc((int)(pow((double)sudoku_ptr->sudoku_length, 4.0)) * sizeof(char *));
+    new_sudoku->sudoku_array = (char **)malloc((int)(pow((double)sudoku_ptr->sudoku_length, 3.0)) * sizeof(char *));
     if (new_sudoku->sudoku_array == NULL)
     {
         // Gestion de l'erreur de mémoire
@@ -211,7 +236,7 @@ sudoku* new_solution(sudoku *sudoku_ptr){
     }
 
     // Allouer de la mémoire pour le tableau sudoku_blocks
-    new_sudoku->sudoku_blocks = (char **)malloc((int)(pow((double)sudoku_ptr->sudoku_length, 4.0)) * sizeof(char *));
+    new_sudoku->sudoku_blocks = (char **)malloc((int)(pow((double)sudoku_ptr->sudoku_length, 3.0)) * sizeof(char *));
     if (new_sudoku->sudoku_blocks == NULL)
     {
         // Gestion de l'erreur de mémoire

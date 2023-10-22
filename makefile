@@ -3,7 +3,7 @@
 #
 
 EXEC = main
-OBJECTS = sudoku.o
+OBJECTS = sudoku.o sudoku_solving.o
 PROJECT_NAME = CHPS0701_PROJET
 
 SRC_DIR = src

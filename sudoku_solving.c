@@ -1,15 +1,17 @@
-#include "sudoku.h"
-#include "stdlib.h"
+#include <stdlib.h>
 #include <omp.h>
+#include <math.h>
+
+#include "sudoku.h"
 //w1,w2,w3... un ensemble de solution 
 //fonction economique c(w) 
 //fonction de voisinage V : OMEGA donne 2 puissance OMEGA 
 
-//à chaque itération une solution omega prime est choisit arbitrairement parmi toutes les solutions possibles 
+//à chaque itération une solution omega prime est choisit arbitrairement parmi toutes les solutions possibles
 
-//graphe de sudoku > les sommets sont les casses de la grille, deux sommets osnt liés s'ils sont sur la même ligne, colonne, sous carré 
 
-void solve(sudoku* sudoku_ptr){
+
+sudoku* solve_sudoku(sudoku* sudoku_ptr){
     //INITIALISATION 
     double delta = 0.1;
     double ep = 1620/2;
@@ -52,13 +54,13 @@ void solve(sudoku* sudoku_ptr){
             c_prime = c-c1+c2;
 
             //choisir u dans   [0,1]
-            u = rand_r(&seed) truc ;
+            double u = ((double)rand_r(&seed) / RAND_MAX) * 2;
 
             if(u <= e*((c_prime-c)/Temperature)){
                 c = c_prime;//acceptation
             } else {
                 omega->sudoku_array[i][j] = temporaire;//rejet
-                omega->sudoku_blocks[][] = temporaire;
+                omega->sudoku_blocks[block_nb(i,j,omega->sudoku_length)][pos_in_block(i,j,omega->sudoku_length)] = temporaire;
             }
             if(c == 0){
                 
@@ -69,6 +71,5 @@ void solve(sudoku* sudoku_ptr){
         
     }
 
-    free_sudoku(omega);
-    free_sudoku(sudoku_ptr);
+    return omega;
 }

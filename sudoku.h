@@ -36,4 +36,6 @@ void block_coords(int row, int col, int sudoku_length, int* coords);
 int block_nb(int row, int col, int sudoku_length);
 //donne la position (entre 0 et 8) d'une case dans un bloc de la grille 
 int pos_in_block(int row, int col, int sudoku_length);
+//Affiche le sudoku passé en paramètre à l'écran
+void print_sudoku(sudoku* su); 
 #endif 
