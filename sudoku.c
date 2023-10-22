@@ -41,7 +41,38 @@ void print_sudoku(sudoku* su){
         }
         
     }
+
     
+    
+}
+
+//Alloue la mémoire pour un sudoku non-initialisé passé en paramètre
+int malloc_sudoku(sudoku* new_sudoku, int line_col_length){
+        // Allouer de la mémoire pour le tableau sudoku_array
+    // il faut d'abord lire le fichier pour connaître la longueur de l'array
+    new_sudoku->sudoku_array = (char **)malloc((int)(line_col_length) * sizeof(char *));
+    if (new_sudoku->sudoku_array == NULL)
+    {
+        // Gestion de l'erreur de mémoire
+        free(new_sudoku);
+        return 1;
+    }
+    for(int i = 0; i<line_col_length;i++){
+        new_sudoku->sudoku_array[i] = (char *)malloc((int)(line_col_length) * sizeof(char));
+    }
+
+    // Allouer de la mémoire pour le tableau sudoku_blocks
+    new_sudoku->sudoku_blocks = (char **)malloc((int)(line_col_length) * sizeof(char *));
+    if (new_sudoku->sudoku_blocks == NULL)
+    {
+        // Gestion de l'erreur de mémoire
+        free(new_sudoku);
+        return 1;
+    }
+    for(int i = 0; i<line_col_length;i++){
+        new_sudoku->sudoku_blocks[i] = (char *)malloc((int)(line_col_length) * sizeof(char));
+    }
+    return 0;
 }
 
 // charge un sudoku en mémoire, un sudoku est représenté par une ligne dans un fichier "."
@@ -81,35 +112,14 @@ sudoku *load_sudoku(char* filename, int line_number)
     // lecture de la taille du sudoku, à refaire
     int sudoku_length = 3; // premier char
     int line_col_length = sudoku_length * sudoku_length;
-    int char_nb = (int)pow((double)(sudoku_length), 3.0);
+    //int char_nb = (int)pow((double)(sudoku_length), 3.0);
+
+    if(malloc_sudoku(new_sudoku,line_col_length)){
+        printf("Erreur à l'allocation mémoire\n");
+        return NULL;
+    }
 
     new_sudoku->sudoku_length = sudoku_length;
-
-    // Allouer de la mémoire pour le tableau sudoku_array
-    // il faut d'abord lire le fichier pour connaître la longueur de l'array
-    new_sudoku->sudoku_array = (char **)malloc((int)(line_col_length) * sizeof(char *));
-    if (new_sudoku->sudoku_array == NULL)
-    {
-        // Gestion de l'erreur de mémoire
-        free(new_sudoku);
-        return NULL;
-    }
-    for(int i = 0; i<line_col_length;i++){
-        new_sudoku->sudoku_array[i] = (char *)malloc((int)(line_col_length) * sizeof(char));
-    }
-
-    // Allouer de la mémoire pour le tableau sudoku_blocks
-    new_sudoku->sudoku_blocks = (char **)malloc((int)(line_col_length) * sizeof(char *));
-    if (new_sudoku->sudoku_blocks == NULL)
-    {
-        // Gestion de l'erreur de mémoire
-        free(new_sudoku);
-        return NULL;
-    }
-    for(int i = 0; i<line_col_length;i++){
-        new_sudoku->sudoku_array[i] = (char *)malloc((int)(line_col_length) * sizeof(char));
-    }
-
 
     char c = '0';
 
@@ -117,8 +127,7 @@ sudoku *load_sudoku(char* filename, int line_number)
     {
         for (int j = 0; j < line_col_length; j++)
         {
-            c = fgetc(file);
-
+            c = fgetc(file);   
             // Place the character in Array&Block
             new_sudoku->sudoku_array[i][j] = c;
             new_sudoku->sudoku_blocks[block_nb(i,j,sudoku_length)][pos_in_block(i,j,sudoku_length)];
@@ -143,12 +152,8 @@ sudoku *load_sudoku(char* filename, int line_number)
 //indique le nombre de violation de règle pour la case spécifiée en paramètres
 unsigned int case_cost(sudoku *sudoku_ptr, int i, int j){
     unsigned int cost = 0;
-    int cur_value = sudoku_ptr->sudoku_array[i][j];
     int line_col_len = sudoku_ptr->sudoku_length * sudoku_ptr->sudoku_length;
-
-    int cur_block = block_nb(i,j,sudoku_ptr->sudoku_length);
-    int cur_pos_in_block = pos_in_block(i,j,sudoku_ptr->sudoku_length);
-
+/*
     for(int k = 0; k < line_col_len; k++){
         //line
         if(j != k){
@@ -169,12 +174,47 @@ unsigned int case_cost(sudoku *sudoku_ptr, int i, int j){
             }
         }
     }
+    */
+    //printf("case cost : %u\n",cost);
+
+    char cur_value = sudoku_ptr->sudoku_array[i][j];
+    int cur_block = block_nb(i,j,sudoku_ptr->sudoku_length);
+    int cur_pos_in_block = pos_in_block(i,j,sudoku_ptr->sudoku_length);
+
+    for(int k = 0; k < line_col_len; k++){
+        //line
+        //printf("%c != %c?\n",cur_value,sudoku_ptr->sudoku_array[i][k]);
+        if(j != k){
+            if(cur_value == sudoku_ptr->sudoku_array[i][k]){
+                ++cost;
+                //printf("yes, cout : %u\n",cost);
+            }
+        }
+        //column
+        //printf("%c != %c?\n",cur_value,sudoku_ptr->sudoku_array[k][j]);
+        if(i != k){
+            if(cur_value == sudoku_ptr->sudoku_array[k][j]){
+                ++cost;
+                //printf("yes, cout : %u\n",cost);
+
+            }
+        }
+        //bloc // peut etre mieux de le faire dans une autre boucle 
+        if(cur_pos_in_block != k){
+            //printf("%c != %c?\n",cur_value, sudoku_ptr->sudoku_array[cur_block][k]);
+            if(cur_value == sudoku_ptr->sudoku_array[cur_block][k]){
+                ++cost;
+                //printf("yes, cout : %u\n",cost);
+            }
+        }
+    }
+    return cost;
 }
 
 // indique le nombre de violation de règle pour la grille
 unsigned int grid_cost(sudoku *sudoku_ptr){
     unsigned int cost = 0;
-    int cur_value = 0;
+    char cur_value = 0;
     int cur_block = 0;
     int cur_pos_in_block = 0;
 
@@ -223,39 +263,27 @@ sudoku* new_solution(sudoku *sudoku_ptr){
         return NULL;
     }
 
-    new_sudoku->sudoku_length = sudoku_ptr->sudoku_length;
-
-    // Allouer de la mémoire pour le tableau sudoku_array
-    // on peut pas faire ça, il faut d'abord lire le fichier pour connaître la longueur de l'array
-    new_sudoku->sudoku_array = (char **)malloc((int)(pow((double)sudoku_ptr->sudoku_length, 3.0)) * sizeof(char *));
-    if (new_sudoku->sudoku_array == NULL)
-    {
-        // Gestion de l'erreur de mémoire
-        free(new_sudoku);
-        return NULL;
-    }
-
-    // Allouer de la mémoire pour le tableau sudoku_blocks
-    new_sudoku->sudoku_blocks = (char **)malloc((int)(pow((double)sudoku_ptr->sudoku_length, 3.0)) * sizeof(char *));
-    if (new_sudoku->sudoku_blocks == NULL)
-    {
-        // Gestion de l'erreur de mémoire
-        free(new_sudoku);
-        return NULL;
-    }
-
-
     int line_col_length = (sudoku_ptr->sudoku_length*sudoku_ptr->sudoku_length);
 
-    for (int i = 0; i < sudoku_ptr->sudoku_length; i++)
+
+    if(malloc_sudoku(new_sudoku,line_col_length)){
+        printf("Erreur à l'allocation mémoire\n");
+        return NULL;
+    }
+
+    new_sudoku->sudoku_length = sudoku_ptr->sudoku_length;
+
+    for (int i = 0; i < line_col_length; i++)
     {
-        for (int j = 0; j < sudoku_ptr->sudoku_length; j++)
+        for (int j = 0; j < line_col_length; j++)
         {
-            if(sudoku_ptr->sudoku_array[i][j] == 0){
-                new_sudoku->sudoku_array[i][j] = rand_r(&seed)%9+1;
+            if(sudoku_ptr->sudoku_array[i][j] == '0'){
+                new_sudoku->sudoku_array[i][j] = ((rand_r(&seed)%9+1) + '0');
+                new_sudoku->sudoku_blocks[block_nb(i,j,new_sudoku->sudoku_length)][pos_in_block(i,j,new_sudoku->sudoku_length)] = new_sudoku->sudoku_array[i][j];
             } else {
+
                 new_sudoku->sudoku_array[i][j] = sudoku_ptr->sudoku_array[i][j];
-                //TODO : RAJOUTER DANS LE BLOC ARRAY
+                new_sudoku->sudoku_blocks[block_nb(i,j,new_sudoku->sudoku_length)][pos_in_block(i,j,new_sudoku->sudoku_length)] = new_sudoku->sudoku_array[i][j];
             }
         }
     }
