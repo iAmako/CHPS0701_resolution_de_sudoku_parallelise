@@ -34,15 +34,15 @@ void solve(sudoku* sudoku_ptr){
             seed = omp_get_thread_num();
 
             //choisir i et j dans {1,9} (vérifier que c'est pas une case déjà prise)
-            seed = (unsigned int)time(NULL)+pthread_self();
-            i = rand_r()%9+1;
-            j = rand_r()%9+1;
+            seed = (unsigned int)time(NULL)+omp_get_thread_num();
+            i = rand_r(&seed)%9+1;
+            j = rand_r(&seed)%9+1;
 
             temporaire = omega->sudoku_array[i][j];
             c1 = case_cost(omega,i,j);
 
             do{
-                tmp_solution = rand_r()%9+1;;//nouvelle solution aléatoire entre 1 et 9 
+                tmp_solution = rand_r(&seed)%9+1;;//nouvelle solution aléatoire entre 1 et 9 
                 omega->sudoku_array[i][j] = tmp_solution;
                 omega->sudoku_blocks[block_nb(i,j,omega->sudoku_length)][pos_in_block(i,j,omega->sudoku_length)] = tmp_solution; //ajouter la division euclidienne 
             }
@@ -52,7 +52,7 @@ void solve(sudoku* sudoku_ptr){
             c_prime = c-c1+c2;
 
             //choisir u dans   [0,1]
-            u = rand_r truc ;
+            u = rand_r(&seed) truc ;
 
             if(u <= e*((c_prime-c)/Temperature)){
                 c = c_prime;//acceptation

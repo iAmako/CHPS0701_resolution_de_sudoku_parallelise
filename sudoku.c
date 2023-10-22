@@ -4,6 +4,8 @@
 #include <math.h>
 #include <sys/types.h>
 #include <stdlib.h>
+#include <omp.h>
+#include <time.h>
 
 #define TAILLE_SUDOKU 3
 
@@ -32,6 +34,8 @@ sudoku *load_sudoku(char* filename, int line_number)
         return NULL;
     }
 
+
+
     // Ouverture du fichier
     FILE *file = fopen(filename, "r");
     if (file == NULL)
@@ -39,6 +43,7 @@ sudoku *load_sudoku(char* filename, int line_number)
         perror("Erreur lors de l'ouverture du fichier");
         return NULL;
     }
+
 
     // TODO : CHANGER POUR ÊTRE UTILISABLE AVEC N'IMPORTE QUEL FICHIER
     // CHANGER POUR ÊTRE UTILISABLE AVEC LES SUDOKU 4*4,5*5...
@@ -79,7 +84,7 @@ sudoku *load_sudoku(char* filename, int line_number)
         return NULL;
     }
 
-    char c = NULL;
+    char c = '0';
 
     for (int i = 0; i < line_col_length; i++)
     {
@@ -184,6 +189,8 @@ unsigned int grid_cost(sudoku *sudoku_ptr){
 // génère une solution aléatoire pour le sudoku
 sudoku* new_solution(sudoku *sudoku_ptr){
 
+    unsigned int seed = (unsigned int)time(NULL)+omp_get_thread_num();
+
     sudoku *new_sudoku = (sudoku *)malloc(sizeof(sudoku));
     if (new_sudoku == NULL)
     {
@@ -220,9 +227,10 @@ sudoku* new_solution(sudoku *sudoku_ptr){
         for (int j = 0; j < sudoku_ptr->sudoku_length; j++)
         {
             if(sudoku_ptr->sudoku_array[i][j] == 0){
-                new_sudoku->sudoku_array[i][j] = rand_r()%9+1;
+                new_sudoku->sudoku_array[i][j] = rand_r(&seed)%9+1;
             } else {
-                new_sudoku->sudoku_array[i][j] = sudoku_ptr->sudoku_array;
+                new_sudoku->sudoku_array[i][j] = sudoku_ptr->sudoku_array[i][j];
+                //TODO : RAJOUTER DANS LE BLOC ARRAY
             }
         }
     }

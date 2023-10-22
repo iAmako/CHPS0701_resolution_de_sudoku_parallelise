@@ -4,6 +4,7 @@
         "graphes.C": "cpp",
         "sudoku.h": "c",
         "stdio.h": "c",
-        "types.h": "c"
+        "types.h": "c",
+        "time.h": "c"
     }
 }
