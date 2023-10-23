@@ -19,7 +19,7 @@ unsigned int case_cost(sudoku *sudoku_ptr, int i, int j);
 //indique le nombre de violation de règle pour la grille 
 unsigned int grid_cost(sudoku *sudoku_ptr);
 //génère une solution aléatoire pour le sudoku
-sudoku* new_solution(sudoku* sudoku_ptr);
+sudoku* new_solution(sudoku* sudoku_ptr, unsigned* seed);
 //libérer la mémoire
 void free_sudoku(sudoku* sudoku_ptr);
 //donne les coordonnées dans le tableau de blocs correspondant aux coords du tableau de lignes/colonnes  
@@ -30,4 +30,5 @@ int block_nb(int row, int col, int sudoku_length);
 int pos_in_block(int row, int col, int sudoku_length);
 //Affiche le sudoku passé en paramètre à l'écran
 void print_sudoku(sudoku* su); 
+void print_contraintes(sudoku *su);
 #endif 

@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <time.h>
+
 #include "sudoku.h"
 #include "sudoku_solving.h"
 
@@ -10,14 +12,18 @@
 void test_sudoku(char* file_path,int line_nb){
     //charge un sudoku en mémoire, un sudoku est représenté par une ligne dans un fichier "."     
 
+    unsigned seed = time(NULL);
+
     printf("%s,%d\n",file_path,line_nb);
     sudoku* my_sudoku = load_sudoku(file_path, line_nb);
 
     print_sudoku(my_sudoku);
 
-    sudoku* solution = new_solution(my_sudoku);
+    sudoku* solution = new_solution(my_sudoku,&seed);
 
     print_sudoku(solution);
+
+    printf("Cout de la case 0 0 : %u",case_cost(solution,0,0));
 
 
     //indique le nombre de violation de règle pour la case spécifiée en paramètres
@@ -46,6 +52,13 @@ int main(int argc, char* argv[]) {
     }
     */
 
+
+
+
+
+
+
+
     sudoku* my_sudoku = load_sudoku(argv[1], atoi(argv[2]));
 
     //test_sudoku(argv[1], atoi(argv[2]));
@@ -56,7 +69,13 @@ int main(int argc, char* argv[]) {
     printf("Solution : \n\n");
     print_sudoku(solution);
 
+
+
     free_sudoku(my_sudoku);
     free_sudoku(solution);
+
+    //test_sudoku(argv[1],atoi(argv[2]));
+
+
     
 }
