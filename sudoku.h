@@ -8,21 +8,10 @@ typedef struct sudoku_s{
     int sudoku_length;
     char** sudoku_array;
     char** sudoku_blocks;
-
     //correspondance array blocks : > int k = i / sudoku_length * sudoku_length; k < j / sudoku_length * sudoku_length + sudoku_length
-
-
 }sudoku;
 
-/*
-//probablement useless
-typedef struct solution_s{
-    float cout;
-    float temperature;
-    sudoku sudoku_origine;
-    sudoku sudoku_solution;
-}solution;
-*/
+
 //charge un sudoku en mémoire, un sudoku est représenté par une ligne dans un fichier "." 
 sudoku* load_sudoku(char* filename, int line_number);//ou à partir du char* filename ? 
 //indique le nombre de violation de règle pour la case spécifiée en paramètres

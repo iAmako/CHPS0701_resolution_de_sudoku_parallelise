@@ -28,6 +28,7 @@ sudoku* solve_sudoku(sudoku* sudoku_ptr){
     char tmp_solution = '0';
     double u = 0;
     int nb_of_cases = pow(sudoku_ptr->sudoku_length,4);
+    unsigned int nbEssais = 0;
     
     seed = omp_get_thread_num() + time(NULL);
 
@@ -45,7 +46,7 @@ sudoku* solve_sudoku(sudoku* sudoku_ptr){
     //calcul du cout de la grille
     c = grid_cost(omega);
 
-    printf("%u violations de règles",c);
+    printf("%u violations de règles\n",c);
 
 
     while(c != 0 || Temperature >= 0.00273852){
@@ -91,22 +92,27 @@ sudoku* solve_sudoku(sudoku* sudoku_ptr){
 
             if(u > exp(-(((double)(c_prime-c))/Temperature))){
                 c = c_prime;//acceptation
-                printf("New total cost : %u\n",c);
-                printf("grille de base : \n");
-                print_sudoku(sudoku_ptr);
-                printf("new solution : \n");
-                print_sudoku(omega);
+                //printf("New total cost : %u\n",c);
+                //printf("grille de base : \n");
+                //print_sudoku(sudoku_ptr);
+                //printf("new solution : \n");
+                //print_sudoku(omega);
             } else {
-                printf("New total cost refusé : %u\n",c);
+                //printf("New total cost refusé : %u\n",c);
                 omega->sudoku_array[i][j] = temporaire;//rejet
                 omega->sudoku_blocks[block_nb(i,j,omega->sudoku_length)][pos_in_block(i,j,omega->sudoku_length)] = temporaire;
             }
-            if(c == 0) return omega;
+            if(c == 0){
+                printf("Nombre d'essais : %u\n",nbEssais);
+                return omega;
+            } 
         }
         //printf("i : %d, j : %d, temporaire : %c\n",i,j,omega->sudoku_array[i][j]);
-        //print_sudoku(omega);
+        ++nbEssais;
         Temperature = ( Temperature / ( 1 + ( log(1 + delta) / (ep + 1)) * Temperature ));
-        //printf("Temperature : %lf\n",Temperature);
+        printf("Coût total : %u\nTemperature : %lf\n",c,Temperature);
+        print_sudoku(omega);
+
         
     }
 

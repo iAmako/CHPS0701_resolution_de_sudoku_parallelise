@@ -39,11 +39,7 @@ void print_sudoku(sudoku* su){
         if(!((i+1)%su->sudoku_length)){
             printf("\n");
         }
-        
     }
-
-    
-    
 }
 
 //Alloue la mémoire pour un sudoku non-initialisé passé en paramètre
@@ -153,29 +149,6 @@ sudoku *load_sudoku(char* filename, int line_number)
 unsigned int case_cost(sudoku *sudoku_ptr, int i, int j){
     unsigned int cost = 0;
     int line_col_len = sudoku_ptr->sudoku_length * sudoku_ptr->sudoku_length;
-/*
-    for(int k = 0; k < line_col_len; k++){
-        //line
-        if(j != k){
-            if(cur_value == sudoku_ptr->sudoku_array[i][k]){
-                ++cost;
-            }
-        }
-        //column
-        if(i != k){
-            if(cur_value == sudoku_ptr->sudoku_array[k][j]){
-                ++cost;
-            }
-        }
-        //bloc // peut etre mieux de le faire dans une autre boucle 
-        if(cur_pos_in_block != k){
-            if(cur_value == sudoku_ptr->sudoku_array[cur_block][k]){
-                ++cost;
-            }
-        }
-    }
-    */
-    //printf("case cost : %u\n",cost);
 
     char cur_value = sudoku_ptr->sudoku_array[i][j];
     int cur_block = block_nb(i,j,sudoku_ptr->sudoku_length);
